@@ -1,0 +1,14 @@
+name: PGA library
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: g++ -std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror -Icpp/include cpp/tests/pga_library_test.cpp -o pga_library_test
+      - run: ./pga_library_test
+      - run: ./pga_library_test benchmark > pga_benchmark.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pga-benchmark
+          path: pga_benchmark.csv
