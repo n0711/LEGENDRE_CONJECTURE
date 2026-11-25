@@ -23,3 +23,7 @@
   counts by expected densities supplies no proved upper bound on their sum.
 - **FAILED — inherited endpoint analysis:** the baseline's lower endpoint
   `n²-1` was an algebraic error; the correct positive set is `(n²,(n+1)²)`.
+- **FALSIFIED — degree-two p²q claim:** residual degree-two candidates need
+  not have that factorization.  At `n=3,m=15`, the factors are `3·5`,
+  both distinct.  Degree-two means two distinct residual prime divisors;
+  factor multiplicities are separate.

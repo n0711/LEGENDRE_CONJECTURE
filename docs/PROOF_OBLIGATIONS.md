@@ -39,6 +39,17 @@ need complete zero lists, ordinate enclosures, and outward rounding.
 
 ## Next research objective
 
+Establish a rigorous uniform bound
+\[
+C_{n,k(n)}(4k(n)(n+1))\le(1-\epsilon)n
+\]
+for fixed \(\epsilon>0\) and all sufficiently large n.
+
+PGA-L029 provides an audited fixed-k truncation form.  PGA-L030 remains
+constant-dependent until the Stieltjes/N(T) tails are written with explicit
+admissible constants.  PGA-L028 remains incomplete until the generalized
+kernel principal term and remainder are fixed.
+
 Find a bound exploiting the phases `-n² mod d` across the full signed
 Möbius sum, or an upper bound for the *aggregate* disjoint semiprime
 correction smaller than the rough-survivor count. Fixed-degree

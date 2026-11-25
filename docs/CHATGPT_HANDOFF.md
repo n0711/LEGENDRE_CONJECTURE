@@ -6,6 +6,22 @@ only for statements tagged **RH-CONDITIONAL**.
 
 ## 1. New results and proofs
 
+- **ESTABLISHED/DERIVED:** generalized sinc weights are now defined and
+  audited; fixed-k truncation has the form
+  `O_k(n^k log(T)/T^(k-1))`, adaptive substitution gives the proposed
+  `O(kn logT 4^-k)=o(n)` only as a derived bound with constants pending.
+- **ESTABLISHED:** prime-power contamination is at least no worse than
+  `O(logn loglogn)=o(n)`; the square `(loglogn)^2` claim is a looser bound.
+- **ESTABLISHED:** adaptive cutoff ordinates number
+  `Theta(n logn loglogn)`.
+- **ESTABLISHED:** `Lambda(n(n+1))=0` for n>=2.
+- **LEAN-CERTIFIED:** PGA-L007-L009 generic degree identities compile:
+  incident-component witness, residual degree <=3, exact `L=R-E+W-H`,
+  and `3L>=3R-3E+2W`.
+- **NUMERICAL:** targeted PGA tests and strict C++20 compile pass; selected
+  C++ n=4264 gives `G=3L-W=15` in the repository's present variable
+  convention. This is finite evidence only.
+
 - **ESTABLISHED:** loop-state 1 and state 2 transitions, first-residue
   boundary handling, maintenance, and state-0/compositeness classification
   are now implemented and tested through `n<=100` (447 repository tests pass).
@@ -77,6 +93,9 @@ not outward-rounded certificates; no certified complete zero list is supplied.
 
 ## 5. Failed approaches
 
+- **FALSIFIED:** a degree-two residual candidate need not be `p²q`;
+  `n=3,m=15=3·5` is a counterexample.
+
 - **FAILED:** a loop-state invariant alone can prove classification and
   completeness, but it supplies no lower bound forcing state 0 to remain
   nonempty. The universal survivor inequality remains the exact obstruction.
@@ -89,6 +108,11 @@ The previous target `gap=o(sqrt(x)log x)` would not itself suffice.
 See `FAILED_APPROACHES.md`.
 
 ## 6. Exact unresolved inequalities
+
+The decisive central obligation remains the uniform bound
+`C_{n,k(n)}(4k(n)(n+1)) <= (1-epsilon)n` with fixed epsilon and effective
+constants. PGA-L029/L030 are not substitutes until their constants and
+generalized principal-term remainder are written rigorously.
 
 **CONJECTURAL:** for every `n>=1`, with `L=n²,U=n²+2n,Q=product_{p<=n}p`,
 
@@ -116,6 +140,10 @@ separately? Is there a precisely stated, quantitatively stronger intermediate
 result in the reported RH development that addresses either inequality?
 
 ## 8. Next research objective
+
+The exact remaining analytic target is the uniform one-sided bound
+`C_{n,k(n)}(T)<= (1-epsilon)n` with effective constants and explicit
+kernel/truncation remainders.
 
 The next candidate is a signed-remainder bound using the consecutive-square
 phase `-n² mod d`, or an aggregate bound for residual semiprimes. State

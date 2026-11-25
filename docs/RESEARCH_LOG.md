@@ -26,6 +26,10 @@
   state 1 is threshold-eliminated; state 2 is a large-prime residual.
 - **LEAN-CERTIFIED:** the threshold-phase membership lemma compiled and
   is consistent with the same standard three-axiom report.
+- **AUDITED:** generalized sinc weights, adaptive k/T, fixed-k truncation
+  form and adaptive zero count.  PGA-L029 is retained with constants pending;
+  PGA-L030 and PGA-L028 remain unproved.  The degree-two p²q claim was
+  falsified by `n=3,m=15`.
 - **LEAN-CERTIFIED:** compiled 11 elementary reduction lemmas with pinned
   Lean/Mathlib and only the standard three axioms; see the verifier record.
 - **NUMERICAL:** 347 formula/identity checks, five Lean-audit runner checks,

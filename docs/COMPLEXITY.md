@@ -98,3 +98,19 @@ the actual versions, selected cache size and compiler/axiom status are
 recorded in `LEAN_VERIFICATION.md`. Proof-checking a fixed finite development
 is not an algorithm deciding Legendre for all integers. The manuscript is
 XeLaTeX source; its build is specified in CI, separately from proof validity.
+
+## PGA generalized-kernel complexity
+
+**ESTABLISHED — adaptive ordinates.**  For
+`k(n)=Theta(loglog n)` and `T(n)=Theta(k(n)n)`, the standard zero-count
+asymptotic gives `N(T)=Theta(TlogT)=Theta(nlogn loglogn)`.  Evaluating
+all supplied ordinates to a fixed precision is
+`Theta(nlogn loglogn)`, excluding zero generation, interval certification
+and precision-dependent arithmetic.
+
+**ESTABLISHED — fixed-k tail.**  For fixed even `k>=2`, the truncation
+bound is `O_k(n^k logT/T^(k-1))`, with no constant made effective here.
+
+**DERIVED — adaptive tail.**  Substituting the adaptive scale gives
+`O(knlogT4^-k)=o(n)`, but this claim requires explicit Stieltjes constants
+and is not currently a certified numeric bound.

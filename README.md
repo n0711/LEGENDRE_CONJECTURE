@@ -14,6 +14,15 @@ This repository does not claim that Legendre's conjecture has been solved.
 - `paper/`: XeLaTeX research paper.
 - `scripts/`: reproducible validation entry points.
 
+## Prime Graph Algorithm (PGA)
+
+PGA is the current graph-theoretic development by Charalampos Nadiotis.
+Its finite C++20 implementation is [prime_graph.cpp](cpp/prime_graph.cpp),
+with independent Python checks in [test_prime_graph.py](python/tests/test_prime_graph.py).
+The kernel audit is in [PGA_KERNEL_AUDIT.md](docs/PGA_KERNEL_AUDIT.md).
+PGA reuses no code or implementation claim from `n0711/P_EQUALS_NP`;
+that repository remains separate.
+
 ## Quick start
 
 ```powershell

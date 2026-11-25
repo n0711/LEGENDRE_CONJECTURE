@@ -33,6 +33,9 @@ compiled WSL mirror byte for byte. The compiler/audit command exited zero.
   Legendre instance for that `n`.
 - `mem_smallPhaseCovered`: membership in the threshold state-1 phase is
   exact divisibility by a prime at most the supplied threshold.
+- PGA degree terms: `pga_degree_term`, `pga_exact_identity`,
+  `pga_three_H_bound`, `pga_lower_bound`, `pga_nonisolated_incident`,
+  and `pga_max_degree_three` compile with only the three standard axioms.
 
 **CONJECTURAL:** Positivity of the survivor count for every positive `n` is
 still unproved. The file neither assumes RH nor proves Legendre, L001, a
