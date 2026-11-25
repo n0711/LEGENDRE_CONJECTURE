@@ -211,3 +211,6 @@ for a one-sided zero-sum theorem.
 - `e3a87c6`: L001 and exact sieve reductions.
 - `721c271`: exact loop invariants and threshold phase audit.
 - `35ab109`: PGA graph/degree lemmas and kernel audit.
+- `2f25bd6`: publication research audit and kernel diagnostics.
+- `68858ec`: release README/CITATION, interval-marking PGA, and strict C++ checks.
+- `0d94fb2`: removed local environment details from the current Lean audit notes.
