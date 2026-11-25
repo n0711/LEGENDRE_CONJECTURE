@@ -64,12 +64,10 @@ empty theorem lists, incomplete proof assumptions and custom assumptions are
 rejected.
 
 Local verification used Ubuntu under WSL and an exact copy of the tracked
-Lean source, configuration and manifest. Reusable tools/cache are outside Git
-at `/home/charalampos_nadiotis/.cache/legend-lean-audit/`; the Lean binary is
-under `lean-4.8.0-linux/bin/`, and the checked mirror is `project/`. The targeted
-cache fetched 1,461 dependency artifacts rather than all of Mathlib. Native
-Windows Lean was not installed. IPv4 was selected in this local cache's curl
-configuration after IPv6 retrieval stalled.
+Lean source, configuration and manifest. Reusable tools and cache were kept
+outside the repository and are not required to reproduce the pinned workflow.
+The targeted cache fetched 1,461 dependency artifacts rather than all of
+Mathlib. Native Windows Lean was not installed.
 
 **ESTABLISHED — complexity scope:** These are universal symbolic proofs;
 checking them does not enumerate `n` or the interval integers. The finite-set
