@@ -1,0 +1,4 @@
+*.lean text eol=lf
+*.py text eol=lf
+lake-manifest.json text eol=lf
+lean-toolchain text eol=lf

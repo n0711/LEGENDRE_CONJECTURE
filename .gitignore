@@ -3,3 +3,7 @@ __pycache__/
 data/
 *.olean
 .lake/
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.pdf

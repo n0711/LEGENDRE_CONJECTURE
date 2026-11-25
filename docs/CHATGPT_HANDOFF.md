@@ -1,52 +1,114 @@
-# ChatGPT Handoff
+﻿# ChatGPT handoff
 
-## Current status
+Updated 2026-11-25, continuing clean commit `f4397dc`. Legendre remains
+**CONJECTURAL**; no universal proof is claimed. RH is an explicit assumption
+only for statements tagged **RH-CONDITIONAL**.
 
-M0 source verification has begun.  M1 kernel audit has begun.  M2 executable
-prime and zero infrastructure has been initialized.  No theorem of Legendre
-has been proved.
+## 1. New results and proofs
 
-## Verified derivations
+- **ESTABLISHED:** L001 holds for every `n>=1,T>=1`. The requested constants
+  follow from Trudgian's original Theorem 2; the optional sharper numerator
+  is `0.317 log T+9.89425`. See `L001_TRUNCATION.md`.
+- **ESTABLISHED:** the kernel's positive set is `(n²,(n+1)²)`. The previous
+  `n²-1` endpoint was wrong. Mellin normalization is `h sqrt(x) C_n`.
+- **ESTABLISHED:** prime-power contamination is at most
+  `D_n=log(n²+2n) sum_{k=3}^{floor(log₂(n²+2n))}1/k=o(n)`;
+  trivial zeros contribute at most `E_n=(2n+1)/(n²(n⁴-1))`, for `n>=2`.
+- **ESTABLISHED:** exact Möbius floor identity, square-endpoint congruences,
+  and unique semiprime correction after cube-root sieving.
+- **ESTABLISHED / FAILED approach:** every fixed odd Bonferroni truncation
+  eventually becomes negative, even for the actual square residues.
+  This excludes fixed depth, not all combinatorial methods. Full proofs:
+  `DISCRETE_SIEVE.md` and `VERIFIED_LEMMAS.md`; no novelty claim.
+- **LEAN-CERTIFIED:** 11 elementary lemmas compiled, including both kernel
+  endpoints, interval cardinality, small-factor coverage, survivor/primality
+  equivalence, and the union-cardinality equivalence. Each axiom audit has
+  only `propext`, `Classical.choice`, `Quot.sound`. Details and pinned
+  dependencies are in `LEAN_VERIFICATION.md`. L001 is not Lean-certified.
 
-For `x=n(n+1)` and `h=log(1+1/n)`, the support is
-`(n^2-1,(n+1)^2)`.  Therefore an integer-weighted sum detects primes only in
-that interval; the strict right endpoint must be checked separately.
+## 2. Assumptions and dependencies
 
-The Mellin formula stated in the premise is correct:
+Trudgian's zero-count theorem is a cited external analytic input, specialized
+and integrated independently here. L001 as an ordinate statement needs no
+RH; the explicit-formula identification does. No pair-correlation,
+independence, or GRH hypothesis has been imported silently.
+Alpöge's announcement, Sutherland's dated verification report, and selected
+source statements were inspected. Their terminal nonvanishing result gives
+no extracted square-interval estimate. The enormous external proof was not
+replayed locally. See `RH_PROOF_ANALYSIS.md` for exact scope and source hashes.
 
-`F_n(s)=2*x^s*(cosh((s-1/2)h)-1)/(h*(s-1/2)^2)`.
+## 3. Complexity
 
-At `s=1`, `F_n(1)=x*h+O(x h^3)=n+O(1)`.
+**ESTABLISHED:** pruned Möbius traversal is `Theta(M)` word operations with
+`Omega(n)<=M<=O(n²)`, plus prime generation. Direct interval sieving uses
+`O(n log log n+pi(n))` work plus preprocessing and `O(n)` flags. These costs
+are exponential in binary input length. Fixed-block preprocessing overhead
+is retained in the analysis; variable-branch recursion does not satisfy the
+Master Theorem. Zero truncation at `T=Theta(n log n)` needs
+`Theta(n log²n)` ordinates for a fixed relative tail budget, plus generation,
+completeness checks and precision costs. See the lemma documents and
+`COMPLEXITY.md` for model details.
 
-## Verification status
+## 4. Experimental evidence and tests
 
-- Alpöge announcement: https://alpo.ge/remark.pdf
-- Machine checks: completed builds and replay reports are externally recorded.
-- Human refereeing: pending.
-- Legendre: unresolved.
+**NUMERICAL:** 347 mathematical Python tests and five Lean-audit runner tests
+pass. The C++ sieve passes nine Python
+comparisons and three invalid-input checks under WSL g++. Exact finite
+counterexamples to shortcuts include `S(4)=3>S(5)=2` and `B_3(100)=0<S(100)=23`.
+The modest benchmark compares four exact implementations at `n=30,100,300`,
+including preprocessing. MATLAB R2026b successfully exported PNG and vector
+PDF diagnostics from 30 rows; regenerate using `scripts/research_diagnostics.py`
+and `matlab/legendre_visualization.m`. Outputs are ignored under `data/`.
 
-## Numerical evidence
+GitHub Actions now specify Python, C++, Lean axiom auditing, and XeLaTeX
+builds. These workflow jobs have not been run on GitHub in this continuation.
+XeLaTeX is unavailable locally, so the updated manuscript has not been
+compiled here; its mathematical content was reviewed separately.
 
-A segmented sieve through `(10001)^2=100020001` found no failure for
-`1<=n<=10000`.  It found 5,762,536 primes in the scan.  This is finite evidence
-only and does not establish an infinite theorem.
+The inherited scan through `n=10000` is historical finite evidence and was
+not rerun in this continuation. Float zero sums and bounds are diagnostics,
+not outward-rounded certificates; no certified complete zero list is supplied.
 
-The finite run used the positive support interval; it did not numerically
-evaluate a complete zero sum.
+## 5. Failed approaches
 
-## Unresolved inequalities
+Fixed odd inclusion-exclusion depth fails eventually. Termwise Möbius error
+bounds fail already at `n=3`. CRT phases are tied to `-n² mod d`, so uniform
+independence is not available. The absolute zero envelope is
+**ESTABLISHED** to be `Theta(n log n)`, too large for the `Theta(n)` main term.
+The previous target `gap=o(sqrt(x)log x)` would not itself suffice.
+See `FAILED_APPROACHES.md`.
 
-1. Exact normalization of the zero sum and scale of its RH tail.
-2. Uniform cancellation or lower bound for `C_n` at the `n` scale.
-3. A rigorous positive-weight implication without support ambiguity.
-4. A stronger result from the announced Lean proof.
+## 6. Exact unresolved inequalities
 
-## Failed approaches
+**CONJECTURAL:** for every `n>=1`, with `L=n²,U=n²+2n,Q=product_{p<=n}p`,
 
-The naive direct RH-gap route fails as a proof method because it supplies only
-`O(sqrt{x}log x)` or `O(sqrt{x}log^2 x)`, not a uniform \(o(sqrt{x})\) gap.
+`sum_{d|Q} mu(d)({L/d}-{U/d}) > -2n product_{p<=n}(1-1/p)`.
 
-## Recommended next step
+Equivalently, for `z=floor(U^(1/3))`,
 
-Derive and verify explicit truncation constants for the smooth explicit formula,
-then search for a rigorous positive lower bound stronger than crude RH estimates.
+`S_z(n) > sum_{z<p<=n}[pi(floor(U/p))-pi(floor(L/p))]`.
+
+**RH-CONDITIONAL implication:** a sufficient analytic certificate is
+
+`C_n(T)+B(n,T) < [F(1)-D_n-E_n]/[h sqrt(x)]`.
+
+**RH-CONDITIONAL:** nonnegativity already gives `limsup C_n/n<=1`.
+**CONJECTURAL:** the strict `<1` target remains unproved and would imply
+many primes per interval, more than the single prime required. An effective
+cutoff and finite verification are also needed for a universal conclusion.
+
+## 7. Questions for ChatGPT
+
+Can the tied square phases control the full signed Möbius remainder, rather
+than a fixed-degree truncation? Can the aggregate disjoint semiprime correction
+be bounded sharply without estimating each bounded-length cofactor interval
+separately? Is there a precisely stated, quantitatively stronger intermediate
+result in the reported RH development that addresses either inequality?
+
+## 8. Next research objective
+
+Seek a uniform bound for the signed remainder or aggregate semiprime correction.
+Use increasing-depth/optimized sieve weights only with explicit remainder
+control; search for counterexamples before promoting a proposed bound.
+Do not spend the next milestone merely extending the finite prime scan or
+improving tail constants without progress on the signed margin.

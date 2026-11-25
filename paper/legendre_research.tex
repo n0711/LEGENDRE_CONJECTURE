@@ -1,21 +1,65 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{hyperref}
-\title{Reapproaching Legendre's Conjecture Following the Riemann Hypothesis Breakthrough:
-Analytical, Computational and Formal Methods}
+\title{Legendre's Conjecture under RH:\\Exact Sieve Identities and a Truncation Audit}
 \author{Charalampos Nadiotis}
 \date{\today}
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We audit a triangular-kernel explicit formula for consecutive squares,
-document the external status of the 2026 formal RH announcement, and provide
-finite computational and formal-verification scaffolding.  No complete proof
-of Legendre's conjecture is claimed.
+We derive exact discrete sieve identities, prove an obstruction to every
+fixed odd inclusion--exclusion truncation, and audit the logarithmic
+triangular kernel and its explicit zero tail. RH is an assumption only
+where stated. No universal proof of Legendre's conjecture is claimed.
 \end{abstract}
 
+\section{The exact discrete problem}
+\paragraph{ESTABLISHED.}
+For integers $n\ge1$, put $L=n^2$, $U=n^2+2n$ and $Q=\prod_{p\le n}p$.
+Every composite in $(L,U]$ has a prime divisor at most $n$.
+Expanding $\prod_{p\mid Q}(1-\mathbf1_{p\mid m})$ and counting multiples gives
+\[
+S(n)=\pi(U)-\pi(L)=\sum_{d\mid Q}\mu(d)
+ \left(\left\lfloor\frac Ud\right\rfloor-\left\lfloor\frac Ld\right\rfloor\right)
+=2n\prod_{p\le n}(1-1/p)+E(n),
+\]
+where $E(n)=\sum_{d\mid Q}\mu(d)(\{L/d\}-\{U/d\})$.
+\paragraph{CONJECTURAL.}
+The exact remaining inequality is $E(n)>-2n\prod_{p\le n}(1-1/p)$ for every
+$n\ge1$. It is equivalent to Legendre and is not proved here.
+
+\paragraph{ESTABLISHED: fixed-degree obstruction.}
+Let $B_r$ be the sum restricted to $\omega(d)\le r$, for fixed odd $r\ge1$.
+Then $B_r(n)<0$ for every sufficiently large $n$.
+To prove this, first restrict the primes to $p\le z=\lfloor\log n\rfloor$.
+Set $a=\sum_{p\le z}1/p\to\infty$. The elementary symmetric sums satisfy
+$e_j=a^j/j!+O_j(a^{j-2})$ for $j\ge2$: repeated indices in the expansion
+of $a^j$ cost at most $\binom j2(\sum_p p^{-2})a^{j-2}$.
+The floor errors total $O_r((1+\log n)^r)$, so the restricted sum is
+$-2na^r/r!+O_r(na^{r-1})+O_r((1+\log n)^r)<0$ eventually.
+Adding primes cannot increase it: the pointwise weight for $t\ge1$
+dividing primes is $-\binom{t-1}{r}$, and for $t=0$ it is one.
+\paragraph{FAILED.}
+Thus fixed odd truncation cannot prove a uniform positive lower bound.
+This does not exclude increasing degree or optimized sieve weights.
+
+\paragraph{ESTABLISHED: disjoint residual composites.}
+For $z=\lfloor U^{1/3}\rfloor$, let $S_z(n)$ count integers in $(L,U]$
+with no prime divisor at most $z$. A surviving composite has exactly two
+prime factors: three would have product at least $(z+1)^3>U$.
+No square lies in the interval, so these factors are uniquely
+$z<p\le n<q$. Consequently
+\[
+S(n)=S_z(n)-\sum_{z<p\le n}
+ \left[\pi\left(\left\lfloor U/p\right\rfloor\right)
+       -\pi\left(\left\lfloor L/p\right\rfloor\right)\right].
+\]
+\paragraph{CONJECTURAL.}
+Proving that the first term exceeds this exact correction uniformly remains open.
+
 \section{The Kernel}
+\paragraph{ESTABLISHED.}
 Let \(x=n(n+1)\), \(h=\log(1+1/n)\), and
 \[
 f_n(t)=\sqrt{x/t}\max(0,1-|\log(t/x)|/h).
@@ -25,21 +69,105 @@ Its Mellin transform is
 F_n(s)=\frac{2x^s(\cosh((s-\tfrac12)h)-1)}
 {h(s-\tfrac12)^2}.
 \]
-The support is \((n(n+1)e^{-h},n(n+1)e^h)=(n^2-1,(n+1)^2)\).
+The positive set is exactly $(n^2,(n+1)^2)$; the closed support includes
+the zero-valued endpoints. Moreover $0\le f_n\le1$, and
+$F_n(1)=xh[\sinh(h/4)/(h/4)]^2=n+1/2+O(1/n)$.
 
 \section{Explicit Formula}
-Under RH,
+\paragraph{RH-CONDITIONAL.}
+For $n\ge2$, the standard explicit formula, with multiplicities, gives
 \[
 \sum_m\Lambda(m)f_n(m)
-=F_n(1)-\sum_\rho F_n(\rho)-\sum_{k\ge1}F_n(-2k).
+=F_n(1)-h\sqrt{x}\,C_n-R_n,
+\qquad C_n=2\sum_{\gamma>0}\cos(\gamma\log x)
+ \operatorname{sinc}^2(\gamma h/2).
+\]
+Here $\operatorname{sinc}(v)=\sin(v)/v$ by continuous extension.
+The normalization follows from
+$F_n(1/2+i\gamma)=h\sqrt{x}e^{i\gamma\log x}\operatorname{sinc}^2(\gamma h/2)$.
+The contour method is classical; see \cite{dgm} and the detailed derivation
+in \texttt{docs/VERIFIED\_LEMMAS.md}.
+
+\paragraph{ESTABLISHED.}
+The trivial-zero sum obeys
+\[
+0<R_n=\int_{n^2}^{(n+1)^2}\frac{f_n(t)}{t(t^2-1)}\,dt
+\le E_n:=\frac{2n+1}{n^2(n^4-1)}.
+\]
+There are no squares in the interval. For each exponent $k\ge3$, the
+base interval $(n^{2/k},(n+1)^{2/k})$ has length less than one. Hence the
+higher-prime-power contribution is bounded by
+\[
+D_n:=\log U\sum_{k=3}^{\lfloor\log_2 U\rfloor}\frac1k
+=O(\log n\log\log n)=o(n).
 \]
 
+\section{Truncation lemma L001}
+\paragraph{ESTABLISHED.}
+Let $N(T)$ count positive zero ordinates up to and including $T$.
+Trudgian's Theorem 2 \cite{trudgian}, specialized to $\mathbb Q$ and divided
+by two, gives for $T\ge1$
+\[
+\left|N(T)-\frac T{2\pi}\log\frac T{2\pi e}\right|
+\le0.1585\log T+4.9075\le0.35\log T+9.
+\]
+Writing $N=M+R$, Abel summation yields
+\[
+\sum_{\gamma>T}\gamma^{-2}
+=\frac{\log(T/(2\pi))+1}{2\pi T}
+-\frac{R(T)}{T^2}+2\int_T^\infty\frac{R(t)}{t^3}\,dt.
+\]
+Bounding the last two terms by $(0.7\log T+18.175)/T^2$ and using
+$2\operatorname{sinc}^2(\gamma h/2)\le8/(\gamma^2h^2)$ proves
+\[
+|C_n-C_n(T)|\le B(n,T):=\frac8{h^2}\left[
+\frac{\log(T/(2\pi))+1}{2\pi T}
++\frac{0.7\log T+18.175}{T^2}\right].
+\]
+This ordinate lemma needs no RH. The sharper numerator
+$0.317\log T+9.89425$ is also valid. Certified ordinate errors $\epsilon_j$
+contribute at most $2(\log x+h/3)\sum_j\epsilon_j$, since the normalized
+triangle's Fourier transform has derivative bounded by $h/3$.
+
 \section{Remaining Obstacle}
-Known RH estimates give prime gaps of size \(O(\sqrt{x}\log x)\), while
-Legendre requires control at the \(\sqrt{x}\) scale.  The weighted zero-sum
-cancellation condition remains unproved.
+\paragraph{RH-CONDITIONAL.}
+A sufficient prime-existence inequality is
+\[
+F_n(1)-h\sqrt{x}[C_n(T)+B(n,T)]-D_n-E_n>0.
+\]
+Nonnegativity alone gives $\limsup C_n/n\le1$.
+\paragraph{CONJECTURAL.}
+The strict inequality $\limsup C_n/n<1$ is unproved. It would give
+eventual positive mass of order $n$, stronger than the one-prime target.
+\paragraph{FAILED.}
+The absolute envelope is $\Theta(n\log n)$, exceeding the principal mass.
+Classical RH interval estimates such as \cite{dgm} retain a logarithmic
+factor. Neither truncation accuracy nor computational speed proves the
+missing signed margin.
 
 \section{Computational Status}
-A segmented sieve verified all intervals \(n^2<p<(n+1)^2\) for
-\(1\le n\le10^4\).  This is numerical evidence, not an infinite theorem.
+\paragraph{ESTABLISHED: complexity.}
+Exact M\"obius traversal prunes products above $U$ and costs $\Theta(M)$
+word operations, where $\Omega(n)\le M\le O(n^2)$, plus prime generation.
+Its variable-branch recursion does not meet Master Theorem hypotheses.
+Direct interval sieving costs $O(n\log\log n+\pi(n))$ plus prime
+generation and uses $O(n)$ flags. At $T=\Theta(n\log n)$, the zero list
+has $\Theta(n\log^2n)$ entries, exponential in binary input length
+$\Theta(\log n)$. Certified zero generation and precision are additional costs.
+\paragraph{NUMERICAL.}
+Regression tests check exact sieve identities, bounds, and independent
+high-precision formulas. Floating outputs are not outward-rounded
+certificates. The inherited finite scan through $n=10^4$ is historical
+evidence only. Compiler and axiom-audit status is recorded separately in
+\texttt{docs/LEAN\_VERIFICATION.md}.
+
+\begin{thebibliography}{9}
+\bibitem{trudgian} T. S. Trudgian,
+\emph{An improved upper bound for the error in the zero-counting formulae
+for Dirichlet L-functions and Dedekind zeta-functions}, Theorem 2,
+\url{https://arxiv.org/pdf/1206.1844v4}.
+\bibitem{dgm} A. W. Dudek, L. Greni\'e and G. Molteni,
+\emph{Primes in explicit short intervals on RH},
+\url{https://arxiv.org/abs/1503.05403}.
+\end{thebibliography}
 \end{document}
