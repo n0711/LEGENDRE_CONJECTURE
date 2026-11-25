@@ -22,6 +22,11 @@ def trial_prime(m):
     return m >= 2 and all(m % d for d in range(2, math.isqrt(m) + 1))
 
 
+@pytest.mark.parametrize(("value", "root"), [(0, 0), (1, 1), (2, 1), (7, 1), (8, 2), (27, 3)])
+def test_pga_cube_root_floor_boundaries(value, root):
+    assert cube_root_floor(value) == root
+
+
 @pytest.mark.parametrize("n", range(1, 501))
 def test_pga_identity_and_degree_limit(n):
     upper = n * n + 2 * n
@@ -32,6 +37,10 @@ def test_pga_identity_and_degree_limit(n):
     result = analyze(n)
     assert result["H"] == 0
     assert result["L"] == len(independent_primes)
+    assert result["R"] == sum(
+        all((n * n + offset) % p for p in primes if p <= cutoff)
+        for offset in range(1, 2 * n + 1)
+    )
     assert result["R"] - result["E"] + result["W"] - result["H"] == result["L"]
     assert 3 * result["R"] + 2 * result["W"] - 3 * result["E"] == 3 * result["L"] - result["W"]
     assert result["G"] > 0

@@ -55,6 +55,8 @@ def adaptive_zero_sum(n: int, ordinates: list[float]) -> float:
 def cube_root_floor(value: int) -> int:
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
         raise ValueError("value must be a nonnegative integer")
+    if value <= 1:
+        return value
     low, high = 0, 1 << ((value.bit_length() + 2) // 3)
     while low + 1 < high:
         middle = (low + high) // 2
@@ -70,29 +72,32 @@ def analyze(n: int) -> dict[str, int]:
         raise ValueError("n must be a positive integer")
     lower, upper = n * n, n * n + 2 * n
     cutoff = cube_root_floor(upper)
-    primes = segmented_sieve(upper)
-    rough = []
-    degree_one = degree_two = degree_three = 0
-    edge_incidence = primes_count = 0
+    primes = segmented_sieve(n)
+    live = bytearray(b"\x01") * (2 * n)
+    degree = bytearray(2 * n)
 
-    for m in range(lower + 1, upper + 1):
-        divisors = [p for p in primes if cutoff < p < m and m % p == 0]
-        degree = len(divisors)
-        edge_incidence += degree
-        if degree == 0:
-            if all(m % p for p in primes if p <= cutoff):
-                rough.append(m)
-                if all(m % d for d in range(2, math.isqrt(m) + 1)):
-                    primes_count += 1
-        elif degree == 1:
-            rough.append(m)
-            degree_one += 1
-        elif degree == 2:
-            rough.append(m)
-            degree_two += 1
-        else:
-            rough.append(m)
-            degree_three += 1
+    for p in primes:
+        if p > cutoff:
+            break
+        first = p - lower % p
+        for offset in range(first, 2 * n + 1, p):
+            live[offset - 1] = 0
+
+    for p in primes:
+        if p <= cutoff:
+            continue
+        first = p - lower % p
+        for offset in range(first, 2 * n + 1, p):
+            index = offset - 1
+            if live[index]:
+                degree[index] += 1
+
+    rough = [index for index, active in enumerate(live) if active]
+    degree_one = sum(degree[index] == 1 for index in rough)
+    degree_two = sum(degree[index] == 2 for index in rough)
+    degree_three = sum(degree[index] >= 3 for index in rough)
+    edge_incidence = sum(degree[index] for index in rough)
+    primes_count = sum(degree[index] == 0 for index in rough)
 
     r = len(rough)
     h = degree_three

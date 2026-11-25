@@ -96,10 +96,12 @@ technical comparison.
 
 ## C++ and Python algorithms
 
-- C++20 sparse or implicit residual graph: direct interval scan plus
-  segmented prime generation.
-- Python exact graph analysis: trial division only for independently
-  reproducing small finite identities.
+- **ESTABLISHED:** C++20 PGA uses two `2n` candidate arrays and an implicit residual graph.
+  It sieves primes only through `n`, eliminates small-prime multiples, and
+  counts residual prime-divisor degrees in the square interval.
+- **NUMERICAL:** Python PGA independently computes the same interval statistics with
+  byte-array sieving; tests compare the C++ output against this reference and
+  compare the resulting prime count against trial division.
 - Fixed and adaptive sinc-power weights:
   `fixed_kernel_weight`, `fixed_zero_sum`,
   `adaptive_k`, `adaptive_cutoff`, `adaptive_zero_sum`.
@@ -108,15 +110,14 @@ technical comparison.
 
 ## Complexity
 
-- Interval prime scan: \(\Theta(n)\) candidate flags after a \(O(n)\) interval
-  initialization and prime generation model.
-- Word-operation estimate for fixed interval sieving:
-  \(O(n\log\log n+\pi(n))\) in the numerical \(n\) model.
+- **ESTABLISHED:** C++20 PGA graph analysis takes \(\Theta(n\log\log n)\) word operations and
+  \(\Theta(n)\) bytes, including prime generation and candidate processing.
+  Its \(b\)-bit input cost is \(\Theta(2^b\log b)\) word operations and is
+  exponential in \(b\).
 - Binary input length: \(b=\Theta(\log n)\); these algorithms are exponential
   in \(b\).
-- Residual graph edges: \(\Theta(n)\) vertices and each vertex degree
-  \(O(n)\) naively; after the cube-root cutoff, at most two residual
-  primes under the established construction.
+- **ESTABLISHED:** residual graph edges are counted implicitly while enumerating prime
+  multiples; maximum candidate degree is two after the cube-root cutoff.
 - Adaptive zero evaluation: \(\Theta(n\log n\log\log n)\), excluding
   zero generation and certified arithmetic.
 - Master Theorem: applicable only to balanced recursive cube-root and
@@ -132,6 +133,11 @@ python -m pytest python/tests -q
 g++ -std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror
     cpp/prime_graph.cpp -o prime_graph
 ```
+
+**NUMERICAL:** GCC 15.2 strict C++20 validation under WSL passed 9 segmented
+sieve comparisons, 3 invalid-input cases, and 3 differential PGA cases.
+The targeted PGA Python suite passed 1,012 tests; this is finite
+implementation evidence, not a prime-existence proof.
 
 Lean audit:
 

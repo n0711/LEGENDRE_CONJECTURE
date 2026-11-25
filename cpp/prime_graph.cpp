@@ -13,6 +13,7 @@ using u64 = std::uint64_t;
 using usize = std::size_t;
 
 inline u64 cube_root_floor(u64 value) {
+    if (value <= 1) return value;
     u64 low = 0;
     u64 high = value < 4 ? value + 1 : 1ULL << 22;
     while (low + 1 < high) {
@@ -124,50 +125,62 @@ Stats analyze(u64 n) {
     u64 cutoff = cube_root_floor(upper);
     while (cutoff > upper / cutoff / cutoff) --cutoff;
 
-    const auto primes = sieve(upper);
+    if (2 * n > static_cast<u64>(std::numeric_limits<usize>::max()))
+        throw std::overflow_error("candidate interval does not fit address space");
+    const auto primes = sieve(n);
     Stats s{n, 2 * n, cutoff, 0, 0, 0, 0, 0, 0};
-    for (u64 m = lower + 1; m <= upper; ++m) {
-        u64 degree = 0;
-        for (u64 p : primes) {
-            if (p > cutoff && p < m && m % p == 0) ++degree;
+    std::vector<std::uint8_t> live(static_cast<usize>(2 * n), 1);
+    std::vector<std::uint8_t> degree(static_cast<usize>(2 * n), 0);
+
+    for (u64 p : primes) {
+        if (p > cutoff) break;
+        u64 offset = p - lower % p;
+        for (u64 r = offset; r <= 2 * n;) {
+            live[static_cast<usize>(r - 1)] = 0;
+            if (2 * n - r < p) break;
+            r += p;
         }
-        if (degree == 0) {
-            bool small_factor = false;
-            for (u64 p : primes) {
-                if (p > cutoff) break;
-                if (m % p == 0) { small_factor = true; break; }
-            }
-            if (!small_factor) {
-                ++s.rough;
-                bool composite = false;
-                for (u64 p : primes) {
-                    if (p < m && m % p == 0) { composite = true; break; }
-                }
-                if (!composite) ++s.primes;
-            }
-        } else {
-            if (degree == 1) ++s.degree_one;
-            else if (degree == 2) ++s.degree_two;
-            else ++s.degree_three_or_more;
-            ++s.rough;
+    }
+
+    for (u64 p : primes) {
+        if (p <= cutoff) continue;
+        u64 offset = p - lower % p;
+        for (u64 r = offset; r <= 2 * n;) {
+            const auto index = static_cast<usize>(r - 1);
+            if (live[index])
+                degree[index] = static_cast<std::uint8_t>(degree[index] + 1U);
+            if (2 * n - r < p) break;
+            r += p;
         }
-        u64 residual_degree = 0;
-        for (u64 p : primes) {
-            if (p > cutoff && p < m && m % p == 0) ++residual_degree;
-        }
-        s.edge_incidence += residual_degree;
+    }
+
+    for (usize i = 0; i < live.size(); ++i) {
+        if (!live[i]) continue;
+        ++s.rough;
+        const auto d = degree[i];
+        s.edge_incidence += d;
+        if (d == 0) ++s.primes;
+        else if (d == 1) ++s.degree_one;
+        else if (d == 2) ++s.degree_two;
+        else ++s.degree_three_or_more;
     }
     return s;
 }
 
 bool valid_identity(const Stats &s) {
-    u64 h = s.degree_three_or_more;
-    u64 lower = s.rough - s.edge_incidence + s.degree_two - h;
-    return lower == s.primes;
+    const auto lhs = static_cast<std::int64_t>(s.primes);
+    const auto rhs = static_cast<std::int64_t>(s.rough) -
+                     static_cast<std::int64_t>(s.edge_incidence) +
+                     static_cast<std::int64_t>(s.degree_two) -
+                     static_cast<std::int64_t>(s.degree_three_or_more);
+    return lhs == rhs;
 }
 
 bool sufficient(const Stats &s) {
-    return 3 * s.rough + 2 * s.degree_two > 3 * s.edge_incidence;
+    const auto lhs = 3 * static_cast<std::int64_t>(s.rough) +
+                     2 * static_cast<std::int64_t>(s.degree_two);
+    const auto rhs = 3 * static_cast<std::int64_t>(s.edge_incidence);
+    return lhs > rhs;
 }
 
 } // namespace pga

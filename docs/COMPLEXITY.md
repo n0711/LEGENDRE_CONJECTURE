@@ -99,7 +99,38 @@ recorded in `LEAN_VERIFICATION.md`. Proof-checking a fixed finite development
 is not an algorithm deciding Legendre for all integers. The manuscript is
 XeLaTeX source; its build is specified in CI, separately from proof validity.
 
-## PGA generalized-kernel complexity
+## PGA complexity
+
+### Graph-analysis implementation
+
+**ESTABLISHED:** the C++20 PGA implementation generates primes through `n`,
+marks the `2n` candidate offsets divisible by primes at most
+`floor(cuberoot((n+1)^2-1))`, then accumulates residual degrees using primes
+up to `n`. The candidate interval is initialized and scanned in `Theta(n)`
+time. Prime generation costs `Theta(n log log n)` word operations; interval
+marking costs
+`O(n sum_{p<=z}1/p + n sum_{z<p<=n}1/p + pi(n)) = O(n log log n)`,
+where `z=floor(cuberoot((n+1)^2-1))`. The first sum is in fact
+`Theta(log log n)` after the prime reciprocal weights are accounted for.
+Thus total time is `Theta(n log log n)` word operations and space is
+`Theta(n)` bytes, dominated by two candidate arrays; the prime list adds
+`O(pi(n))` machine words.
+
+The graph is implicit: no edge objects are stored. Each residual edge is
+counted while traversing multiples of its prime. For every candidate
+`m <= (n+1)^2-1`, a composite has a prime factor at most `n`; after the
+small-prime phase, every remaining prime factor is therefore represented by
+a prime in `(z,n]`. Three such distinct factors would have product greater
+than `(z+1)^3 > (n+1)^2-1`, so residual degree is at most two.
+
+For binary input length `b=ceil(log2(n+1))`, this numeric-value algorithm
+takes `Theta(2^b log b)` word operations (up to the usual rounding between
+`n` and `2^b`). With `D(b)` the bit cost of `b`-bit arithmetic, a conservative
+bit-operation bound is `O(n log log n D(b))`; it is not polynomial in `b`.
+Initialization and final aggregation establish an `Omega(n)` word lower
+bound. The Master Theorem does not apply to this sieve/multiples traversal.
+
+### Generalized-kernel evaluation
 
 **ESTABLISHED — adaptive ordinates.**  For
 `k(n)=Theta(loglog n)` and `T(n)=Theta(k(n)n)`, the standard zero-count

@@ -1,6 +1,6 @@
 ﻿# ChatGPT handoff
 
-Updated 2026-11-25, continuing clean commit `f4397dc`. Legendre remains
+Updated 2026-11-25. Legendre remains
 **CONJECTURAL**; no universal proof is claimed. RH is an explicit assumption
 only for statements tagged **RH-CONDITIONAL**.
 
@@ -24,6 +24,13 @@ only for statements tagged **RH-CONDITIONAL**.
 - **IMPLEMENTED:** C++20/Python fixed and adaptive `C_n,k(T)` evaluators
   consume supplied ordinate lists and return floating-point diagnostics only;
   they are not certified enclosures.
+- **ESTABLISHED / IMPLEMENTED:** the C++20 and Python PGA models now sieve
+  primes only through `n`, first mark candidates with small prime divisors,
+  and then count residual prime-factor incidences implicitly in the interval.
+  The implementation uses `Theta(n loglog n)` word operations and
+  `Theta(n)` bytes. Strict C++20 compilation with GCC 15.2 under WSL and
+  differential checks passed: 9 segmented-sieve comparisons, 3 invalid-input
+  cases, and 3 C++/Python PGA comparisons.
 
 - **ESTABLISHED:** loop-state 1 and state 2 transitions, first-residue
   boundary handling, maintenance, and state-0/compositeness classification
@@ -85,7 +92,7 @@ including preprocessing. MATLAB R2026b successfully exported PNG and vector
 PDF diagnostics from 30 rows; regenerate using `scripts/research_diagnostics.py`
 and `matlab/legendre_visualization.m`. Outputs are ignored under `data/`.
 
-GitHub Actions now specify Python, C++, Lean axiom auditing, and XeLaTeX
+GitHub Actions specify Python, C++20/PGA, Lean axiom auditing, and XeLaTeX
 builds. These workflow jobs have not been run on GitHub in this continuation.
 XeLaTeX is unavailable locally, so the updated manuscript has not been
 compiled here; its mathematical content was reviewed separately.

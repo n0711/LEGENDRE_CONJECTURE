@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this research software or its formalized results, please cite this repository."
+type: software
+title: "Prime Graph Algorithm (PGA): Legendre Conjecture Research"
+authors:
+  - family-names: Nadiotis
+    given-names: Charalampos
+    affiliation: Independent researcher
+identifier:
+  - type: url
+    value: https://github.com/n0711/LEGENDRE_CONJECTURE
