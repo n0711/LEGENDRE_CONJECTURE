@@ -1,0 +1,63 @@
+import argparse
+from bisect import bisect_left, bisect_right
+import csv
+import json
+import math
+from pathlib import Path
+
+import mpmath as mp
+
+from legendre_core import kernel, mellin_principal, segmented_sieve, weighted_prime_sum
+
+
+def zero_sum(n: int, zero_count: int) -> float:
+    x = n * (n + 1)
+    h = math.log1p(1.0 / n)
+    mp.dps = 50
+    total = mp.mpf("0")
+    for gamma in mp.zetazeros(zero_count):
+        g = mp.mpf(str(gamma))
+        sinc = mp.sin(g * h / 2) / (g * h / 2) if g * h != 0 else mp.mpf("1")
+        total += 2 * mp.cos(g * mp.log(x)) * sinc * sinc
+    return float(total)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--n-max", type=int, default=10000)
+    parser.add_argument("--zero-count", type=int, default=100)
+    parser.add_argument("--output-dir", type=Path, default=Path("data"))
+    args = parser.parse_args()
+
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    limit = (args.n_max + 1) ** 2
+    primes = segmented_sieve(limit)
+
+    csv_path = args.output_dir / "legendre_scan.csv"
+    with csv_path.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(["n", "weighted_sum", "principal", "zero_count", "prime_interval"])
+        failures = []
+        for n in range(1, args.n_max + 1):
+            weighted = weighted_prime_sum(n, primes)
+            principal = mellin_principal(n)
+            count = bisect_left(primes, (n + 1) ** 2) - bisect_right(primes, n * n)
+            if not count:
+                failures.append(n)
+            writer.writerow([n, format(weighted, ".17g"), format(principal, ".17g"), count,
+                             json.dumps(count > 0)])
+
+    summary = {
+        "n_max": args.n_max,
+        "prime_limit": limit,
+        "prime_count": len(primes),
+        "zero_count_requested": args.zero_count,
+        "failures": failures[:100],
+        "failure_count": len(failures),
+    }
+    (args.output_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(json.dumps(summary, indent=2))
+
+
+if __name__ == "__main__":
+    main()

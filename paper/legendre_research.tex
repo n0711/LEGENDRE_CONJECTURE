@@ -1,0 +1,45 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\title{Reapproaching Legendre's Conjecture Following the Riemann Hypothesis Breakthrough:
+Analytical, Computational and Formal Methods}
+\author{Charalampos Nadiotis}
+\date{\today}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We audit a triangular-kernel explicit formula for consecutive squares,
+document the external status of the 2026 formal RH announcement, and provide
+finite computational and formal-verification scaffolding.  No complete proof
+of Legendre's conjecture is claimed.
+\end{abstract}
+
+\section{The Kernel}
+Let \(x=n(n+1)\), \(h=\log(1+1/n)\), and
+\[
+f_n(t)=\sqrt{x/t}\max(0,1-|\log(t/x)|/h).
+\]
+Its Mellin transform is
+\[
+F_n(s)=\frac{2x^s(\cosh((s-\tfrac12)h)-1)}
+{h(s-\tfrac12)^2}.
+\]
+The support is \((n(n+1)e^{-h},n(n+1)e^h)=(n^2-1,(n+1)^2)\).
+
+\section{Explicit Formula}
+Under RH,
+\[
+\sum_m\Lambda(m)f_n(m)
+=F_n(1)-\sum_\rho F_n(\rho)-\sum_{k\ge1}F_n(-2k).
+\]
+
+\section{Remaining Obstacle}
+Known RH estimates give prime gaps of size \(O(\sqrt{x}\log x)\), while
+Legendre requires control at the \(\sqrt{x}\) scale.  The weighted zero-sum
+cancellation condition remains unproved.
+
+\section{Computational Status}
+A segmented sieve verified all intervals \(n^2<p<(n+1)^2\) for
+\(1\le n\le10^4\).  This is numerical evidence, not an infinite theorem.
+\end{document}
