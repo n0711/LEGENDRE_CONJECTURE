@@ -169,3 +169,7 @@ improving tail constants without progress on the signed margin.
 ## Engineering milestone: experimental PGA library
 
 See [PGA_LIBRARY.md](PGA_LIBRARY.md) for the block-based C++20 API, sharper degree-one argument, differential test and matched benchmark protocol. CI execution and independent Lean certification of the sharper lemma are separate obligations. No speedup or conjecture solution is claimed.
+
+### Parallel batch milestone
+
+Added bounded-worker ordered batch counting, 1040 local ordered comparisons plus four edge cases, and a local 16-interval benchmark (median 45599/23687/15782 microseconds for 1/2/4 workers). See PGA_LIBRARY.md for raw trials and limitations. CI now includes a single-thread libprimesieve comparison; results pending. Same-interval parallelism, external measurements, Lean certification and distribution remain separate milestones.
