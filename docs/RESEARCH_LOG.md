@@ -30,6 +30,8 @@
   form and adaptive zero count.  PGA-L029 is retained with constants pending;
   PGA-L030 and PGA-L028 remain unproved.  The degree-two p²q claim was
   falsified by `n=3,m=15`.
+- **PUBLICATION:** added `docs/PUBLICATION_HANDOFF.md` with lemma inventory,
+  literature links, reproducibility commands and remaining proof blockers.
 - **LEAN-CERTIFIED:** compiled 11 elementary reduction lemmas with pinned
   Lean/Mathlib and only the standard three axioms; see the verifier record.
 - **NUMERICAL:** 347 formula/identity checks, five Lean-audit runner checks,

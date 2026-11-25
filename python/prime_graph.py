@@ -5,7 +5,6 @@ identities against trial division and the independent interval sieve.
 """
 
 import math
-from bisect import bisect_left
 
 from legendre_core import segmented_sieve
 
@@ -30,6 +29,27 @@ def adaptive_k(n: int) -> int:
 
 def adaptive_cutoff(n: int) -> int:
     return 4 * adaptive_k(n) * (n + 1)
+
+
+def fixed_zero_sum(n: int, ordinates: list[float], k: int, cutoff: float) -> float:
+    if isinstance(n, bool) or not isinstance(n, int) or n < 1:
+        raise ValueError("n must be a positive integer")
+    if k <= 0 or k % 2:
+        raise ValueError("k must be a positive even integer")
+    h = math.log1p(1.0 / n)
+    x = n * (n + 1)
+    total = 0.0
+    for gamma in ordinates:
+        if not math.isfinite(gamma) or gamma <= 0:
+            raise ValueError("ordinates must be positive finite values")
+        if gamma <= cutoff:
+            total += 2.0 * math.cos(gamma * math.log(x)) * fixed_kernel_weight(gamma, h, k)
+    return total
+
+
+def adaptive_zero_sum(n: int, ordinates: list[float]) -> float:
+    k = adaptive_k(n)
+    return fixed_zero_sum(n, ordinates, k, float(adaptive_cutoff(n)))
 
 
 def cube_root_floor(value: int) -> int:

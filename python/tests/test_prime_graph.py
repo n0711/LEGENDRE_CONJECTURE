@@ -10,9 +10,11 @@ from legendre_core import segmented_sieve
 from prime_graph import (
     adaptive_cutoff,
     adaptive_k,
+    adaptive_zero_sum,
     analyze,
     cube_root_floor,
     fixed_kernel_weight,
+    fixed_zero_sum,
 )
 
 
@@ -77,6 +79,17 @@ def test_fixed_and_adaptive_kernel_definitions():
     assert adaptive_k(1) == 4
     assert adaptive_k(100) == 2 * max(2, math.ceil(math.log(math.log(101))))
     assert adaptive_cutoff(100) == 4 * adaptive_k(100) * 101
+
+
+def test_fixed_and_adaptive_zero_sums():
+    ordinates = [14.134725, 21.022040, 25.010858]
+    fixed = fixed_zero_sum(100, ordinates, 4, 100.0)
+    adaptive = adaptive_zero_sum(100, ordinates)
+    assert math.isfinite(fixed)
+    assert math.isfinite(adaptive)
+    assert fixed_zero_sum(100, [], 4, 100.0) == 0.0
+    with pytest.raises(ValueError):
+        fixed_zero_sum(100, [-1.0], 4, 100.0)
 
 
 @pytest.mark.parametrize("n", [10, 100, 1000])

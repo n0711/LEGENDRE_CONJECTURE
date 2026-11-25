@@ -6,7 +6,6 @@
 #include <limits>
 #include <stdexcept>
 #include <vector>
-#include <numbers>
 
 namespace pga {
 
@@ -53,6 +52,28 @@ u64 adaptive_cutoff(u64 n) {
     return 4 * k * (n + 1);
 }
 
+double fixed_zero_sum(u64 n, const std::vector<double> &ordinates,
+                      u64 k, double cutoff) {
+    if (n == 0) throw std::invalid_argument("n must be positive");
+    const double h = std::log1p(1.0 / static_cast<double>(n));
+    const double x = static_cast<double>(n) * static_cast<double>(n + 1);
+    double total = 0.0;
+    for (double gamma : ordinates) {
+        if (!std::isfinite(gamma) || gamma <= 0.0)
+            throw std::invalid_argument("ordinates must be positive and finite");
+        if (gamma <= cutoff)
+            total += 2.0 * std::cos(gamma * std::log(x)) *
+                     fixed_kernel_weight(gamma, h, k);
+    }
+    return total;
+}
+
+double adaptive_zero_sum(u64 n, const std::vector<double> &ordinates) {
+    const u64 k = adaptive_k(n);
+    return fixed_zero_sum(n, ordinates, k,
+                          static_cast<double>(adaptive_cutoff(n)));
+}
+
 std::vector<u64> sieve(u64 limit) {
     if (limit < 2) return {};
     u64 root = static_cast<u64>(std::sqrt(static_cast<long double>(limit)));
@@ -70,8 +91,12 @@ std::vector<u64> sieve(u64 limit) {
 
     std::vector<bool> block(limit - 1, true);
     for (u64 p : primes) {
+        if (p > limit / p) continue;
         u64 start = p * p;
-        for (u64 m = start; m <= limit; m += p) block[m - 2] = false;
+        for (u64 m = start;; m += p) {
+            block[m - 2] = false;
+            if (m > limit - p) break;
+        }
     }
     primes.clear();
     for (u64 m = 2; m <= limit; ++m) if (block[m - 2]) primes.push_back(m);
@@ -97,8 +122,6 @@ Stats analyze(u64 n) {
     if (lower > (~u64{0}) - 2 * n) throw std::overflow_error("interval overflow");
     u64 upper = lower + 2 * n;
     u64 cutoff = cube_root_floor(upper);
-    while ((cutoff + 1) <= upper / (cutoff + 1) &&
-           (cutoff + 1) * (cutoff + 1) * (cutoff + 1) <= upper) ++cutoff;
     while (cutoff > upper / cutoff / cutoff) --cutoff;
 
     const auto primes = sieve(upper);

@@ -21,6 +21,9 @@ only for statements tagged **RH-CONDITIONAL**.
 - **NUMERICAL:** targeted PGA tests and strict C++20 compile pass; selected
   C++ n=4264 gives `G=3L-W=15` in the repository's present variable
   convention. This is finite evidence only.
+- **IMPLEMENTED:** C++20/Python fixed and adaptive `C_n,k(T)` evaluators
+  consume supplied ordinate lists and return floating-point diagnostics only;
+  they are not certified enclosures.
 
 - **ESTABLISHED:** loop-state 1 and state 2 transitions, first-residue
   boundary handling, maintenance, and state-0/compositeness classification
