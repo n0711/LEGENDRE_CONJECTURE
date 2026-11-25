@@ -165,3 +165,7 @@ Use increasing-depth/optimized sieve weights only with explicit remainder
 control; search for counterexamples before promoting a proposed bound.
 Do not spend the next milestone merely extending the finite prime scan or
 improving tail constants without progress on the signed margin.
+
+## Engineering milestone: experimental PGA library
+
+See [PGA_LIBRARY.md](PGA_LIBRARY.md) for the block-based C++20 API, sharper degree-one argument, differential test and matched benchmark protocol. CI execution and independent Lean certification of the sharper lemma are separate obligations. No speedup or conjecture solution is claimed.
