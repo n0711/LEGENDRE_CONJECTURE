@@ -39,7 +39,7 @@ jobs:
           MATHLIB_NO_CACHE_ON_UPDATE: "1"
         run: |
           lake update
-          lake exe cache get Mathlib/Analysis/SpecialFunctions/Log/Basic.lean Mathlib/Data/Nat/Prime.lean Mathlib/Order/Interval/Finset/Nat.lean Mathlib/Tactic/FieldSimp.lean Mathlib/Tactic/Linarith.lean Mathlib/Tactic/Positivity.lean Mathlib/Tactic/Ring.lean
+          lake exe cache get Mathlib/Analysis/SpecialFunctions/Log/Basic.lean Mathlib/Data/Nat/Prime.lean Mathlib/NumberTheory/ArithmeticFunction.lean Mathlib/Order/Interval/Finset/Nat.lean Mathlib/Tactic/FieldSimp.lean Mathlib/Tactic/Linarith.lean Mathlib/Tactic/Positivity.lean Mathlib/Tactic/Ring.lean
       - name: Compile and audit every theorem
         run: python3 lean/audit.py
   paper:
