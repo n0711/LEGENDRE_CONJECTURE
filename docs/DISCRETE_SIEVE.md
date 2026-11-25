@@ -6,6 +6,35 @@ have not yet been translated to Lean, and no novelty is claimed.
 
 ## Exact inversion and square endpoints
 
+## Loop invariant for the three-state sieve
+
+Let `r=1,...,2n` and `m=n²+r`.  Before processing any prime, every state is
+zero.  Processing prime `p` performs exactly:
+
+- if `p<=y`, set every still-eligible offset congruent to `-n² (mod p)` to 1;
+- if `p>y`, set only candidates still in state 0 to 2.
+
+Here `start=p-(n² mod p)` gives the first positive offset.  More generally,
+the first offset is the least positive residue of `-n² mod p`; if `n²` is
+divisible by `p`, that residue is `p`, so `r=p` is the first offset and
+`r=0` is not a candidate.  After a complete pass:
+
+- state 0 iff no prime `p<=n` divides `m`, iff `m` is prime;
+- state 1 iff a prime `p<=y` divides `m`;
+- state 2 iff no prime `p<=y` divides `m` and some prime `y<p<=n` divides `m`.
+
+The maintenance rule is exact because membership is monotone for state 1 and
+the large-prime branch has a strict `state==0` guard.  Termination occurs
+after all primes in ascending order, and the union of states 1 and 2 is
+`covered(n)`.  No counterexample to these classifications was found through
+`n<=100`.
+
+For completeness, state 2 candidates must be semiprimes when
+`y=floor(cuberoot(n²+2n)`: if `m=pq` has `p<=n<q`, uniqueness follows from
+cube-root reduction and the fact that `q` is coprime to the processed
+small-prime set.  This is an exact residual decomposition, not a guarantee
+that state 0 remains nonempty.
+
 Write `L=n²`, `U=n²+2n`, `H=2n`, `P={p prime:p≤n}`, and
 `Q=∏_{p∈P}p`. Empty products have value one. A composite `m∈(L,U]` has a
 prime divisor `p≤√m<n+1`, hence `p≤n`. Conversely every prime in this

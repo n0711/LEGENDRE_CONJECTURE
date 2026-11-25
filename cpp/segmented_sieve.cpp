@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -46,6 +48,44 @@ std::vector<unsigned long long> segmented_sieve(unsigned long long limit,
         lo = hi + 1;
     }
     return primes;
+}
+
+// ESTABLISHED: exact integer cube root for unsigned 64-bit inputs.
+unsigned long long cube_root_floor(unsigned long long value) {
+    unsigned long long low = 0;
+    unsigned long long high = value < 4ULL ? value + 1ULL : (1ULL << 22);
+    while (low + 1 < high) {
+        const auto middle = low + (high - low) / 2;
+        if (middle <= value / middle / middle) low = middle;
+        else high = middle;
+    }
+    return low;
+}
+
+// ESTABLISHED: exact model of the three-state square-interval loop.
+// State 0: undecided; state 1: covered by p <= y;
+// state 2: first covered by y < p <= n, with no small-p divisor.
+std::vector<unsigned char> cube_root_loop_states(unsigned long long n) {
+    if (n == 0) throw std::invalid_argument("n must be positive");
+    if (n > std::numeric_limits<unsigned long long>::max() / n)
+        throw std::overflow_error("n*n overflow");
+    const auto lower = n * n;
+    if (lower > std::numeric_limits<unsigned long long>::max() - 2 * n)
+        throw std::overflow_error("n*n+2*n overflow");
+    const auto upper = lower + 2 * n;
+    const auto y = cube_root_floor(upper);
+    std::vector<unsigned char> state(2 * n, 0);
+    for (const auto p : segmented_sieve(n)) {
+        const auto start = p - lower % p;
+        for (auto r = start; r <= 2 * n;) {
+            auto &v = state[r - 1];
+            if (p <= y) v = 1;
+            else if (v == 0) v = 2;
+            if (2 * n - r < p) break;
+            r += p;
+        }
+    }
+    return state;
 }
 
 int main(int argc, char** argv) {

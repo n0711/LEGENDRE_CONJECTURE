@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from discrete_sieve import (
     cube_root_floor,
+    cube_root_loop_states,
     density_lower_bound,
     mobius_survivors,
     semiprime_split,
@@ -61,6 +62,39 @@ def test_semiprime_correction_and_unique_factor_structure(n):
         p, q = pairs[0]
         assert z < p <= n < q and is_prime_trial(q)
     assert semiprime_split(n) == (len(rough), len(residual), len(expected_primes(n)))
+
+
+@pytest.mark.parametrize("n", range(1, 101))
+def test_cube_root_loop_state_invariants(n):
+    lower, upper = n * n, n * n + 2 * n
+    z = cube_root_floor(upper)
+    states = cube_root_loop_states(n)
+    assert len(states) == 2 * n
+
+    for r, state in enumerate(states, start=1):
+        m = lower + r
+        assert m <= upper
+        small_divisor = any(p <= z and m % p == 0
+                            for p in range(2, z + 1)
+                            if is_prime_trial(p))
+        processed_large_divisor = any(p > z and p <= n and m % p == 0
+                                      for p in range(z + 1, n + 1)
+                                      if is_prime_trial(p))
+        if state == 0:
+            assert is_prime_trial(m)
+        elif state == 1:
+            assert small_divisor
+            assert not is_prime_trial(m)
+        else:
+            assert state == 2
+            assert processed_large_divisor
+            assert not small_divisor
+            assert not is_prime_trial(m)
+            pairs = [(p, m // p) for p in range(z + 1, n + 1)
+                     if m % p == 0 and is_prime_trial(p)]
+            assert len(pairs) == 1
+            p, q = pairs[0]
+            assert z < p <= n < q and is_prime_trial(q)
 
 
 def test_cube_root_integer_boundaries_and_large_precision():

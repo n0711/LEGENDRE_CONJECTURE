@@ -100,6 +100,30 @@ def semiprime_split(n: int) -> tuple[int, int, int]:
     return rough_count, correction, rough_count - correction
 
 
+def cube_root_loop_states(n: int) -> list[int]:
+    """ESTABLISHED: exact three-state model of the supplied C++ loop.
+
+    State 0 is still undecided, state 1 is covered by a prime <= z, and
+    state 2 is covered by a prime > z but has not been covered by <= z.
+    Candidate m=n*n+r is represented by state[r-1], r=1,...,2*n.
+    """
+    lower, upper = _endpoints(n)
+    z = cube_root_floor(upper)
+    state = [0] * (2 * n)
+    primes = segmented_sieve(n)
+    for p in primes:
+        start = p - (lower % p)
+        r = start
+        while r <= 2 * n:
+            index = r - 1
+            if p <= z:
+                state[index] = 1
+            elif state[index] == 0:
+                state[index] = 2
+            r += p
+    return state
+
+
 def density_lower_bound(n: int) -> Fraction:
     """ESTABLISHED: exact rational H*prod(1-1/p)-(2**k-1).
 

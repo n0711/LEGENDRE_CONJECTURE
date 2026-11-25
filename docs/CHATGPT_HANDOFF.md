@@ -6,6 +6,12 @@ only for statements tagged **RH-CONDITIONAL**.
 
 ## 1. New results and proofs
 
+- **ESTABLISHED:** loop-state 1 and state 2 transitions, first-residue
+  boundary handling, maintenance, and state-0/compositeness classification
+  are now implemented and tested through `n<=100` (447 repository tests pass).
+  Lean defines the threshold phases and certifies small-phase membership.
+  The exact finite-state model is not Legendre's conjecture.
+
 - **ESTABLISHED:** L001 holds for every `n>=1,T>=1`. The requested constants
   follow from Trudgian's original Theorem 2; the optional sharper numerator
   is `0.317 log T+9.89425`. See `L001_TRUNCATION.md`.
@@ -71,6 +77,10 @@ not outward-rounded certificates; no certified complete zero list is supplied.
 
 ## 5. Failed approaches
 
+- **FAILED:** a loop-state invariant alone can prove classification and
+  completeness, but it supplies no lower bound forcing state 0 to remain
+  nonempty. The universal survivor inequality remains the exact obstruction.
+
 Fixed odd inclusion-exclusion depth fails eventually. Termwise Möbius error
 bounds fail already at `n=3`. CRT phases are tied to `-n² mod d`, so uniform
 independence is not available. The absolute zero envelope is
@@ -106,6 +116,11 @@ separately? Is there a precisely stated, quantitatively stronger intermediate
 result in the reported RH development that addresses either inequality?
 
 ## 8. Next research objective
+
+The next candidate is a signed-remainder bound using the consecutive-square
+phase `-n² mod d`, or an aggregate bound for residual semiprimes. State
+classification is complete; the missing theorem is positivity of the
+signed sum.
 
 Seek a uniform bound for the signed remainder or aggregate semiprime correction.
 Use increasing-depth/optimized sieve weights only with explicit remainder

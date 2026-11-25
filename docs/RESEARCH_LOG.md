@@ -21,6 +21,11 @@
   or interval-arithmetic verification is claimed.
 - **ESTABLISHED:** derived exact Möbius inversion and semiprime identities;
   proved every fixed odd Bonferroni truncation eventually negative.
+- **ESTABLISHED:** implemented and tested the supplied three-state loop
+  boundaries and maintenance rules. State 0 is exactly the prime set;
+  state 1 is threshold-eliminated; state 2 is a large-prime residual.
+- **LEAN-CERTIFIED:** the threshold-phase membership lemma compiled and
+  is consistent with the same standard three-axiom report.
 - **LEAN-CERTIFIED:** compiled 11 elementary reduction lemmas with pinned
   Lean/Mathlib and only the standard three axioms; see the verifier record.
 - **NUMERICAL:** 347 formula/identity checks, five Lean-audit runner checks,

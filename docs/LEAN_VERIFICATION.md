@@ -31,6 +31,8 @@ compiled WSL mirror byte for byte. The compiler/audit command exited zero.
   primes and has cardinality `2n − |covered|` (natural-number subtraction).
 - `union_card_lt_iff_prime_exists`: `|covered| < 2n` is equivalent to the
   Legendre instance for that `n`.
+- `mem_smallPhaseCovered`: membership in the threshold state-1 phase is
+  exact divisibility by a prime at most the supplied threshold.
 
 **CONJECTURAL:** Positivity of the survivor count for every positive `n` is
 still unproved. The file neither assumes RH nor proves Legendre, L001, a
