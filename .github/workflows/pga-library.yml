@@ -8,7 +8,22 @@ jobs:
       - run: g++ -std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror -Icpp/include cpp/tests/pga_library_test.cpp -o pga_library_test
       - run: ./pga_library_test
       - run: ./pga_library_test benchmark > pga_benchmark.csv
+      - run: g++ -std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror -pthread -Icpp/include cpp/tests/pga_batch_test.cpp -o pga_batch_test
+      - run: ./pga_batch_test
+      - run: ./pga_batch_test benchmark > pga_batch.csv
+      - run: sudo apt-get update && sudo apt-get install -y libprimesieve-dev
+      - run: g++ -std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror -Icpp/include cpp/tests/pga_primesieve_benchmark.cpp -lprimesieve -o pga_external
+      - run: ./pga_external > pga_external.csv
+      - run: |
+          uname -a > benchmark_environment.txt
+          lscpu >> benchmark_environment.txt
+          g++ --version >> benchmark_environment.txt
+          dpkg-query -W libprimesieve-dev >> benchmark_environment.txt
       - uses: actions/upload-artifact@v4
         with:
           name: pga-benchmark
-          path: pga_benchmark.csv
+          path: |
+            pga_benchmark.csv
+            pga_batch.csv
+            pga_external.csv
+            benchmark_environment.txt
